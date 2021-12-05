@@ -3,7 +3,7 @@ import os
 import sys
 
 from main import mainRun
-from sudoku_gui import main
+from sudoku_gui import mainGUI
 
   
 # initializing the constructor 
@@ -57,7 +57,7 @@ while True:
                 mainRun()
             
             if width/2 <= mouse[0] <= width/2+140 and (height/2)-100 <= mouse[1] <= height/2+40-100:
-                main()
+                mainGUI()
 
 
         

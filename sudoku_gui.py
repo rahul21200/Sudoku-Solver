@@ -158,7 +158,7 @@ class Tile:
             self.selected = True
         return self.selected
 
-def main():
+def mainGUI():
     '''Runs the main Sudoku GUI/Game'''
     pygame.init()
     screen = pygame.display.set_mode((540, 590))
