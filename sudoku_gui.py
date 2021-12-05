@@ -4,7 +4,7 @@ from sys import exit
 import pygame
 import time
 import random
-pygame.init()
+
 def generate():
     '''Randomly generates a Sudoku grid/board'''
     while True:  #return will interrupt the loop
@@ -158,8 +158,18 @@ class Tile:
             self.selected = True
         return self.selected
 
+
+def mainGUI():
+    '''Runs the main Sudoku GUI/Game'''
+    pygame.init()
+    screen = pygame.display.set_mode((540, 590))
+    screen.fill((255, 255, 255))
+    pygame.display.set_caption("Sudoku")
+    icon = pygame.image.load(r"icon.png")
+
 def main():
     '''Runs the main Sudoku GUI/Game'''
+    pygame.init()
     screen = pygame.display.set_mode((540, 590))
     screen.fill((255, 255, 255))
     pygame.display.set_caption("Sudoku")
@@ -271,5 +281,3 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-main()
-pygame.quit()

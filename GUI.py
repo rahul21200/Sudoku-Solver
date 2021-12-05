@@ -1,6 +1,14 @@
 import pygame
+import os
+import sys
+
+from main import mainRun
+from sudoku_gui import mainGUI
+
+=======
 import sys
 import main
+
   
 # initializing the constructor 
 pygame.init() 
@@ -21,7 +29,11 @@ color_dark = (0,0,0)
 
 
 #Back-ground Image
+
+bg = pygame.image.load(r'bg.jpg')
+
 bg = pygame.image.load(r'C:\Users\Prabhat Kapoor\Desktop\Rahul\SWE PROJECT\Sudoku-Solver-main\Sudoku-Solver-main\bg.jpg')
+
 
 
 width = screen.get_width()  
@@ -35,7 +47,7 @@ text = smallfont.render('Quit' , True , color)
   
 while True: 
       
-    for ev in pygame.event.get(): 
+    for ev in pygame.event.get():
           
         if ev.type == pygame.QUIT: 
             pygame.quit() 
@@ -44,10 +56,17 @@ while True:
             #button the game is terminated 
             if width/2 <= mouse[0] <= (width/2)+140 and height/2 <= mouse[1] <= (height/2)+40: 
                 pygame.quit()
+            if width/2 <= mouse[0] <= width/2+140 and (height/2)-50 <= mouse[1] <= height/2+40-50:
+                # os.system('main.py')
+                mainRun()
+            
+            if width/2 <= mouse[0] <= width/2+140 and (height/2)-100 <= mouse[1] <= height/2+40-100:
+                mainGUI()
 
         if ev.type == pygame.MOUSEBUTTONDOWN:
             if width/2 <= mouse[0] <= width/2+140 and (height/2)-100 <= mouse[1] <= height/2+40-100:
                 main()
+
         
                   
     # fills the screen with a color 
