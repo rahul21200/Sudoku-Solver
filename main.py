@@ -1,80 +1,58 @@
-import pygame 
-import sys
-  
-  
-# initializing the constructor 
-pygame.init() 
-  
-# screen resolution 
-res = (612,408) 
-# opens up the window 
-screen = pygame.display.set_mode(res) 
-  
-# white color 
-color = (255,255,255) 
-  
-# light shade of the button 
-color_light = (170,170,170) 
-  
-# dark shade of the button 
-color_dark = (0,0,0)
+# This is the entry point. Run this file!
+# You don't need to run digitRecognition.py to train the Convolutional Neural Network (CNN).
+# I have trained the CNN on my computer and saved the architecture in digitRecognition.h5
 
+import cv2
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Flatten
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras import backend as K
+from tensorflow.keras.models import model_from_json
+import RealTimeSudokuSolver
 
-#Back-ground Image
-bg = pygame.image.load("bg.jpg")
+def showImage(img, name, width, height):
+    new_image = np.copy(img)
+    new_image = cv2.resize(new_image, (width, height))
+    cv2.imshow(name, new_image)
 
+# Load and set up Camera
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+cap.set(3, 1280)    # HD Camera
+cap.set(4, 720)
 
-width = screen.get_width()  
-height = screen.get_height() 
-smallfont = pygame.font.SysFont('Raleway Bold',35) 
+# Loading model (Load weights and configuration seperately to speed up model.predict)
+input_shape = (28, 28, 1)
+num_classes = 9
+model = Sequential()
+model.add(Conv2D(32, kernel_size=(3, 3),
+                 activation='relu',
+                 input_shape=input_shape))
+model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(num_classes, activation='softmax'))
 
-text_play = smallfont.render('Play!' , True , color)
-text_solve = smallfont.render('Solve' , True , color)
-text = smallfont.render('Quit' , True , color) 
+# Load weights from pre-trained model. This model is trained in digitRecognition.py
+model.load_weights("digitRecognition.h5")   
 
-  
-while True: 
-      
-    for ev in pygame.event.get(): 
-          
-        if ev.type == pygame.QUIT: 
-            pygame.quit() 
-        if ev.type == pygame.MOUSEBUTTONDOWN: 
-            #if the mouse is clicked on the 
-            #button the game is terminated 
-            if width/2 <= mouse[0] <= (width/2)+140 and height/2 <= mouse[1] <= (height/2)+40: 
-                pygame.quit()
-        
-                  
-    # fills the screen with a color 
-    screen.fill((60,25,60)) 
-    #image is added
-    screen.blit(bg, (0, 0))
-      
-    # stores the (x,y) coordinates into 
-    # the variable as a tuple 
-    mouse = pygame.mouse.get_pos() 
-      
-    # if mouse is hovered on a button it 
-    # changes to lighter shade 
-    if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40: 
-        pygame.draw.rect(screen,color_light,[width/2,height/2,140,40]) 
-    else: 
-        pygame.draw.rect(screen,color_dark,[width/2,height/2,140,40])   
-    screen.blit(text , ((width/2),height/2)) 
+# Let's turn on webcam
+old_sudoku = None
+while(True):
+    ret, frame = cap.read() # Read the frame
+    if ret == True:
+        sudoku_frame = RealTimeSudokuSolver.recognize_and_solve_sudoku(frame, model, old_sudoku) 
+        showImage(sudoku_frame, "Real Time Sudoku Solver", 1066, 600) # Print the 'solved' image
+        if cv2.waitKey(1) & 0xFF == ord('q'):   # Hit q if you want to stop the camera
+            break
+    else:
+        break
 
-
-    if width/2 <= mouse[0] <= width/2+140 and (height/2)-100 <= mouse[1] <= height/2+40-100: 
-        pygame.draw.rect(screen,color_light,[width/2,(height/2)-100,140,40]) 
-    else: 
-        pygame.draw.rect(screen,color_dark,[width/2,(height/2-100),140,40])
-    screen.blit(text_play, ((width/2),(height/2)-100))
-
-    if width/2 <= mouse[0] <= width/2+140 and (height/2)-50 <= mouse[1] <= height/2+40-50: 
-        pygame.draw.rect(screen,color_light,[width/2,(height/2)-50,140,40]) 
-    else: 
-        pygame.draw.rect(screen,color_dark,[width/2,(height/2-50),140,40])
-    screen.blit(text_solve, ((width/2),(height/2)-50))
-
-
-    pygame.display.update()
+cap.release()
+# out.release()
+cv2.destroyAllWindows()
