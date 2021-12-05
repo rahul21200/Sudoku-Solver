@@ -158,6 +158,7 @@ class Tile:
             self.selected = True
         return self.selected
 
+
 def mainGUI():
     '''Runs the main Sudoku GUI/Game'''
     pygame.init()
@@ -165,6 +166,14 @@ def mainGUI():
     screen.fill((255, 255, 255))
     pygame.display.set_caption("Sudoku")
     icon = pygame.image.load(r"icon.png")
+
+def main():
+    '''Runs the main Sudoku GUI/Game'''
+    pygame.init()
+    screen = pygame.display.set_mode((540, 590))
+    screen.fill((255, 255, 255))
+    pygame.display.set_caption("Sudoku")
+    icon = pygame.image.load(r"C:\Users\Prabhat Kapoor\Desktop\Rahul\SWE PROJECT\Sudoku-GUI-master\Sudoku-GUI-master\icon.png")
     pygame.display.set_icon(icon)
 
     #loading screen when generating grid
@@ -272,5 +281,3 @@ def mainGUI():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-
-
